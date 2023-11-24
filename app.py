@@ -1,17 +1,31 @@
 import cv2
 import os
-from flask import Flask, request, render_template
+import joblib
+import pandas as pd
+import numpy as np
 from datetime import date
 from datetime import datetime
-import numpy as np
+from flask_session import Session
+from flask import Flask, session, request, render_template, redirect, flash
 from sklearn.neighbors import KNeighborsClassifier
-import pandas as pd
-import joblib
 
 # Defining Flask App
 app = Flask(__name__)
 
+# Handling session requests and preventing caching user data across sessions.
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
+
+@app.after_request
+def after_request(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Expires"] = 0
+    response.headers["Pragma"] = "no-cache"
+    return response
+
 nimgs = 10
+
 
 # Saving Date today in 2 different formats
 datetoday = date.today().strftime("%m_%d_%y")
@@ -127,6 +141,14 @@ def home():
     names, rolls, times, l = extract_attendance()
     return render_template('home.html', names=names, rolls=rolls, times=times, l=l, totalreg=totalreg(), datetoday2=datetoday2)
 
+# Example usage of verification
+@app.route('/verify')
+def verify():
+    if not session.get("verified", False):
+        flash("User not verified!")
+        return redirect('/')
+
+    return redirect('https://google.com')
 
 ## List users page
 @app.route('/listusers')
@@ -173,12 +195,16 @@ def start():
             cv2.rectangle(frame, (x, y), (x+w, y-40), (86, 32, 251), -1)
             face = cv2.resize(frame[y:y+h, x:x+w], (50, 50))
             identified_person = identify_face(face.reshape(1, -1))[0]
+            if identified_person:
+                session["verified"] = True
+
             add_attendance(identified_person)
             cv2.putText(frame, f'{identified_person}', (x+5, y-5),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
         cv2.imshow('Attendance', frame)
         if cv2.waitKey(1) == 27:
             break
+
     cap.release()
     cv2.destroyAllWindows()
     names, rolls, times, l = extract_attendance()
