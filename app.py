@@ -144,10 +144,12 @@ def home():
 # Example usage of verification
 @app.route('/verify')
 def verify():
+    # Check user is verified
     if not session.get("verified", False):
+        # if not verified redirect to homepage with an appropriate message
         flash("User not verified!")
         return redirect('/')
-
+    # if verified then move on to the webpage (Here I have redirected to google for testing purposes)
     return redirect('https://google.com')
 
 ## List users page
