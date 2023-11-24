@@ -4,7 +4,7 @@ Introduction to engineering project...
 ## Project dependencies.
 `pip install` the following packages to run the program on your own pc:
 - flask
-- flask_session
+- flask-session
 - scikit-learn
 - opencv-python
 - pandas
