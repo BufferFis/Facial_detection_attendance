@@ -2,7 +2,7 @@
 Introduction to engineering project...
 
 ## Project dependencies.
-`pip install` the following packages to run the program on your own pc:
+`pip install` the following packages to run the program on your own machine:
 - flask
 - flask-session
 - scikit-learn
