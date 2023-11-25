@@ -10,5 +10,4 @@ Introduction to engineering project...
 - pandas
 - numpy
 - joblib
-<b>
-PS: Learn to spell detection right bruh
+
