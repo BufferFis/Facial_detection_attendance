@@ -27,16 +27,13 @@ def home():
     names, rolls, times, l = hp.extract_attendance()
     return render_template('home.html', names=names, rolls=rolls, times=times, l=l, totalreg=hp.totalreg(), datetoday2=hp.datetoday2)
 
-# Example usage of verification
 @app.route('/verify')
 def verify():
-    # Check user is verified
     if not session.get("verified", False):
-        # if not verified redirect to homepage with an appropriate message
         flash("User not verified!")
         return redirect('/')
-    # if verified then move on to the webpage (Here I have redirected to google for testing purposes)
-    return redirect('https://google.com')
+
+    return render_template('confidential.html')
 
 ## List users page
 @app.route('/listusers')
